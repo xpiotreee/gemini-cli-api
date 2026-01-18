@@ -6,13 +6,18 @@ const port = 3000;
 app.use(express.json());
 
 app.post('/generate', (req, res) => {
-    const prompt = req.body.prompt;
+    const { prompt, model, session_id } = req.body;
 
     if (!prompt) {
         return res.status(400).json({ error: "Field 'prompt' is required." });
     }
 
-    execFile('gemini', [prompt], { encoding: 'utf8' }, (error, stdout, stderr) => {
+    const args = ['--output-format', 'json'];
+    if (model) args.push('-m', model);
+    if (session_id) args.push('--resume', session_id);
+    args.push(prompt);
+
+    execFile('gemini', args, { encoding: 'utf8' }, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error.message}`);
             return res.status(500).json({ 
@@ -21,9 +26,16 @@ app.post('/generate', (req, res) => {
             });
         }
 
+        let result;
+        try {
+            result = JSON.parse(stdout);
+        } catch (e) {
+            console.warn("Failed to parse JSON output:", e.message);
+            result = stdout.trim();
+        }
+
         res.json({ 
-            result: stdout.trim(),
-            raw_output: stdout 
+            result: result, 
         });
     });
 });

@@ -1,0 +1,32 @@
+{
+  // "security": {
+  //   "auth": {
+  //     "selectedType": "oauth-personal"
+  //   }
+  // },
+  "tools": {
+    "exclude": [
+      "run_shell_command",
+      "read_file",
+      "write_file",
+      "web_fetch",
+      "save_memory",
+      "write_todos",
+      "list_directory",
+      "search_file_content",
+      "glob",
+      "activate_skill",
+      "delegate_to_agent",
+      "replace"
+    ]
+  },
+  "experimental": {
+    "skills": false,
+    "codebaseInvestigatorSettings": {
+      "enabled": false
+    }
+  },
+  "general": {
+    "previewFeatures": true
+  }
+}

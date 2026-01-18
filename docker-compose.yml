@@ -1,0 +1,12 @@
+services:
+  gemini-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    restart: unless-stopped
+    volumes:
+      - ./.gemini-container:/home/node/.gemini

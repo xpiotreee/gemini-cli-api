@@ -1,0 +1,3 @@
+.gemini-container/*
+!.gemini-container/settings.json
+!.gemini-container/GEMINI.md

@@ -20,22 +20,23 @@ While Google provides a standard API, the **Gemini CLI** (when used with OAuth2)
 ## Installation & Setup
 
 ### 1. Clone the repository:
-    ```bash
-    git clone https://github.com/xpiotreee/gemini-cli-api
-    cd gemini-cli-api
-    ```
+```bash
+git clone https://github.com/xpiotreee/gemini-cli-api
+cd gemini-cli-api
+```
 
 ### 2. Configure Environment (Optional)
-    If you plan to use a standard API Key instead of OAuth2, set it now. Create an .env file or export it:
-    ```bash
-    export GOOGLE_API_KEY="your_api_key_here"
-    ```
+If you plan to use a standard API Key instead of OAuth2, set it now. Create an .env file or export it:
+    
+```bash
+export GOOGLE_API_KEY="your_api_key_here"
+```
 
 ### 3. Build and Run with Docker Compose:
-    ```bash
-    docker-compose up --build -d
-    ```
-    The API will be available at `http://localhost:3000`.
+```bash
+docker-compose up --build -d
+```
+The API will be available at `http://localhost:3000`.
 ### 4. Authentication (Crucial Step)
 
 You have two options for authentication. **OAuth2 is recommended** for better free tier limits.
@@ -128,4 +129,4 @@ curl -X POST http://localhost:3000/generate \
 
 ## License
 
-[MIT](LICENSE)
+[GPL](LICENSE)

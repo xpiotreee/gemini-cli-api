@@ -1,9 +1,9 @@
 {
-  // "security": {
-  //   "auth": {
-  //     "selectedType": "oauth-personal"
-  //   }
-  // },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
   "tools": {
     "exclude": [
       "run_shell_command",

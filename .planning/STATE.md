@@ -22,6 +22,7 @@
 | Task ID | Description | Date |
 |---------|-------------|------|
 | 001-gemini-cwd | Execute gemini process inside /tmp/gemini | 2026-02-14 |
+| 002-fix-docker-build | Fix Docker build by ensuring devDependencies are installed for build | 2026-02-14 |
 
 ## Decisions
 - **[Phase 1]** Migrated project to TypeScript and modernized dependencies.

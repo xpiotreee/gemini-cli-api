@@ -23,6 +23,7 @@
 |---------|-------------|------|
 | 001-gemini-cwd | Execute gemini process inside /tmp/gemini | 2026-02-14 |
 | 002-fix-docker-build | Fix Docker build by ensuring devDependencies are installed for build | 2026-02-14 |
+| 003-update-session-logic | Match session by full ID verified against content, add filename to list | 2026-02-14 |
 
 ## Decisions
 - **[Phase 1]** Migrated project to TypeScript and modernized dependencies.

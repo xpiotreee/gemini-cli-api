@@ -6,6 +6,7 @@ export interface SessionMetadata {
   id: string;
   startTime: string;
   lastUpdated: string;
+  filename: string;
 }
 
 export class SessionService {
@@ -21,37 +22,48 @@ export class SessionService {
     
     const sessions = await Promise.all(
       files.map(async (file) => {
-        const stats = await fs.promises.stat(file);
-        const id = path.basename(file, '.json');
-        
-        return {
-          id,
-          startTime: stats.birthtime.toISOString(),
-          lastUpdated: stats.mtime.toISOString(),
-        };
+        try {
+          const stats = await fs.promises.stat(file);
+          const content = await fs.promises.readFile(file, 'utf8');
+          const data = JSON.parse(content);
+          
+          return {
+            id: data.sessionId || path.basename(file, '.json'),
+            startTime: data.startTime || stats.birthtime.toISOString(),
+            lastUpdated: data.lastUpdated || stats.mtime.toISOString(),
+            filename: path.basename(file),
+          };
+        } catch (e) {
+          console.error(`Failed to process session file ${file}:`, e);
+          return null;
+        }
       })
     );
 
-    // Sort by lastUpdated descending
-    return sessions.sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated));
+    // Filter out nulls and sort by lastUpdated descending
+    return sessions
+      .filter((s): s is SessionMetadata => s !== null)
+      .sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated));
   }
 
   async getSession(id: string): Promise<any> {
-    // We search recursively just in case, but usually it should be in one of the subdirs
-    const pattern = path.join(this.basePath, '**/chats/', `${id}.json`).replace(/\\/g, '/');
+    const prefix = id.split('-')[0];
+    const pattern = path.join(this.basePath, '**/chats/', `*${prefix}.json`).replace(/\\/g, '/');
     const files = await glob(pattern);
 
-    if (files.length === 0) {
-      return null;
+    for (const file of files) {
+      try {
+        const content = await fs.promises.readFile(file, 'utf8');
+        const data = JSON.parse(content);
+        if (data.sessionId === id) {
+          return data;
+        }
+      } catch (e) {
+        console.error(`Failed to parse session file ${file}:`, e);
+      }
     }
 
-    const content = await fs.promises.readFile(files[0], 'utf8');
-    try {
-        return JSON.parse(content);
-    } catch (e) {
-        console.error(`Failed to parse session file ${files[0]}:`, e);
-        throw new Error('CORRUPT_SESSION_FILE');
-    }
+    return null;
   }
 }
 

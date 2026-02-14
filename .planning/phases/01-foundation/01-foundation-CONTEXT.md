@@ -1,23 +1,22 @@
-# Phase 1: Foundation & Security - Context
+# Phase 1: Sessions & Foundation - Context
 
 ## Goals
-- Establish a robust TypeScript codebase.
-- Secure the API with Bearer Token authentication.
-- Standardize error handling for better API usability.
+- Migrate to TypeScript for a robust foundation.
+- Implement Session Listing and History retrieval from Gemini CLI storage.
+- Standardize error handling.
 
-## Decisions (Claude's Discretion)
-- **TypeScript:** Migrating to TypeScript immediately to ensure type safety for the OpenAI compatibility layer in Phase 2.
-- **Authentication:** Using Bearer Token authentication via an environment variable (`API_AUTH_TOKEN`). It's simple and effective for a single-user/internal gateway.
-- **Project Structure:** Adopting a standard `src/` directory structure.
-- **Error Handling:** Implementing a global middleware that catches all errors and returns a `{ error: string, details?: any }` structure.
-
-## Dependencies
-- `express`: Web framework.
-- `cors`: Cross-Origin Resource Sharing.
-- `dotenv`: Environment variable management.
-- `typescript`: Language and compiler.
-- `ts-node-dev`: Fast development runner.
+## Decisions
+- **TypeScript:** Strict mode enabled. Restructured into `src/`.
+- **Session Discovery:** 
+  - Base path: `/home/node/.gemini/tmp/` (mapped from host `.gemini-container/tmp/`).
+  - Search: Scan all subdirectories for `chats/*.json`.
+- **API Endpoints:**
+  - `GET /sessions`: Returns `{ sessions: [{ id, startTime, lastUpdated }] }`.
+  - `GET /sessions/:id`: Returns full JSON content from the session file.
+- **Error Handling:** Standardized JSON errors `{ error: "CODE", message: "..." }`.
+- **Authentication:** NONE (Internal Docker use only).
 
 ## Constraints
-- Must maintain the existing `/generate` endpoint functionality.
-- Must continue to work within the Docker environment provided.
+- Must correctly resolve paths inside Docker.
+- Must preserve all metadata (thoughts, tokens) in history response.
+- Maintain existing `/generate` functionality.

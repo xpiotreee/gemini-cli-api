@@ -1,0 +1,13 @@
+{
+  "workflow": "standard",
+  "preferences": {
+    "language": "JavaScript",
+    "framework": "Express",
+    "testing": "none",
+    "linting": "none"
+  },
+  "gsd": {
+    "version": "1.0",
+    "auto_approve_research": true
+  }
+}

@@ -6,6 +6,7 @@ WORKDIR /app
 # The base image might have specific permissions, let's stick to what's likely expected
 USER root
 RUN chown node:node /app
+RUN mkdir /tmp/gemini && chown node:node /tmp/gemini
 USER node
 
 COPY --chown=node:node package*.json ./

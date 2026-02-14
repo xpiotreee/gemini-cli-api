@@ -8,8 +8,9 @@ While Google provides a standard API, the **Gemini CLI** (when used with OAuth2)
 ## Features
 
 -   **RESTful API**: Simple POST endpoint to send prompts.
+-   **OpenAI Compatible**: Support for `/v1/chat/completions` (Standard & Streaming).
+-   **Session Management**: List and retrieve detailed conversation history.
 -   **JSON Output**: Returns parsed JSON responses from the CLI when available.
--   **Session Support**: Supports continuing conversations via `session_id`.
 -   **Dockerized**: Easy deployment using Docker and Docker Compose.
 
 ## Prerequisites
@@ -59,7 +60,7 @@ This wrapper exposes functionality linked to your Google Account. **Do not expos
 
 ## API Usage
 
-### Generate Content
+### Generate Content (Legacy)
 
 **Endpoint:** `POST /generate`
 
@@ -119,13 +120,86 @@ curl -X POST http://localhost:3000/generate \
 }
 ```
 
+### Sessions
+
+**List Sessions**
+
+**Endpoint:** `GET /sessions`
+
+Returns a list of available conversation sessions.
+
+**Example Response:**
+```json
+{
+  "sessions": [
+    {
+      "id": "session-2026-02-14T15-26-7c2a37fd",
+      "startTime": "2026-02-14T15:26:06.490Z",
+      "lastUpdated": "2026-02-14T15:26:16.252Z"
+    }
+  ]
+}
+```
+
+**Get Session Details**
+
+**Endpoint:** `GET /sessions/:id`
+
+Returns the full message history and metadata for a specific session.
+
+---
+
+### OpenAI Compatibility Layer
+
+This wrapper provides an OpenAI-compatible interface, allowing you to use the Gemini CLI with any tool or SDK designed for OpenAI.
+
+**Chat Completions**
+
+**Endpoint:** `POST /v1/chat/completions`
+
+**Request Body:**
+
+| Field      | Type    | Required | Description |
+| :---       | :---    | :---     | :---        |
+| `model`    | String  | Yes      | Gemini model name (e.g., `gemini-3-flash-preview`). |
+| `messages` | Array   | Yes      | Array of message objects with `role` and `content`. |
+| `stream`   | Boolean | No       | If true, returns a stream of SSE events. |
+
+**Example Request:**
+
+```bash
+curl -X POST http://localhost:3000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemini-3-flash-preview",
+    "messages": [
+      { "role": "system", "content": "You are a helpful assistant." },
+      { "role": "user", "content": "Hello!" }
+    ]
+  }'
+```
+
+**Streaming Support:**
+
+When `stream: true` is provided, the API returns Server-Sent Events (SSE) compatible with OpenAI streaming.
+
+```bash
+curl -N -X POST http://localhost:3010/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gemini-3-flash-preview",
+    "messages": [{ "role": "user", "content": "Count to 5" }],
+    "stream": true
+  }'
+```
+
 ## Configuration
 
 -   **Persistence**: The `.gemini-container` directory is mounted to `/home/node/.gemini` inside the container. This persists CLI configuration and session history across container restarts.
 
 ## Future plans
 -   [ ] **Account management**: Easier account switching via API endpoints.
--   [ ] **OpenAI Compatibility**: Endpoint compatible with OpenAI SDKs.
+-   [ ] **Tool support**: Expose MCP and extension functionality via API.
 
 ## License
 

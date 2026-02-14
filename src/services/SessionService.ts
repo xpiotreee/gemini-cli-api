@@ -16,7 +16,7 @@ export class SessionService {
   }
 
   async listSessions(): Promise<SessionMetadata[]> {
-    const pattern = path.join(this.basePath, '**/chats/*.json').replace(/\/g, '/');
+    const pattern = path.join(this.basePath, '**/chats/*.json').replace(/\\/g, '/');
     const files = await glob(pattern);
     
     const sessions = await Promise.all(
@@ -38,7 +38,7 @@ export class SessionService {
 
   async getSession(id: string): Promise<any> {
     // We search recursively just in case, but usually it should be in one of the subdirs
-    const pattern = path.join(this.basePath, '**/chats/', `${id}.json`).replace(/\/g, '/');
+    const pattern = path.join(this.basePath, '**/chats/', `${id}.json`).replace(/\\/g, '/');
     const files = await glob(pattern);
 
     if (files.length === 0) {

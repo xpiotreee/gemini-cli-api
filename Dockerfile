@@ -3,12 +3,18 @@ FROM naoyoshinori/gemini-cli:0-typescript-node
 ENV NODE_ENV=production
 WORKDIR /app
 
+# The base image might have specific permissions, let's stick to what's likely expected
+USER root
+RUN chown node:node /app
 USER node
-RUN npm init -y && \
-    npm install express
 
-COPY --chown=node:node server.js .
+COPY --chown=node:node package*.json ./
+RUN npm install
+
+COPY --chown=node:node . .
+
+RUN npm run build && npm prune --production
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
